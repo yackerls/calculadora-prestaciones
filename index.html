@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Laboral GT - Detallada</title>
+    <title>Calculadora Personalizada</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
 
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2 border-b pb-2">Calculadora Laboral Exacta 🇬🇹</h1>
-        <p class="text-sm text-gray-500 mb-6">Cálculo detallado de prestaciones y desglose de sueldo líquido.</p>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2 border-b pb-2">Calculadora de Liquidación 🇬🇹</h1>
+        <p class="text-sm text-gray-500 mb-6">Versión personalizada: Desglose exacto de descuentos.</p>
 
         <div class="grid grid-cols-1 gap-5 mb-6">
             
             <div>
                 <label class="block text-sm font-medium text-gray-700">Salario Nominal Mensual (Q)</label>
-                <input type="number" id="salario" value="14000" oninput="actualizarIGSS()" class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-bold text-gray-800">
+                <input type="number" id="salario" value="14000" class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-bold text-gray-800">
             </div>
 
-            <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
-                <label class="block text-sm font-medium text-gray-800 mb-2 border-b border-gray-300 pb-1">Desglose de Descuentos</label>
+            <div class="bg-blue-50 p-4 rounded-md border border-blue-200">
+                <label class="block text-sm font-bold text-blue-800 mb-3 border-b border-blue-200 pb-1">Mis Descuentos Mensuales</label>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-xs text-gray-500">IGSS (4.83% aprox)</label>
-                        <input type="number" id="descIGSS" placeholder="0.00" class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm">
+                        <label class="block text-xs font-semibold text-gray-600">1. IGSS (Q)</label>
+                        <input type="number" id="descIGSS" placeholder="Ej: 676.20" class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500">ISR (Impuesto)</label>
-                        <input type="number" id="descISR" placeholder="0.00" class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm">
+                        <label class="block text-xs font-semibold text-gray-600">2. Cafetería (Q)</label>
+                        <input type="number" id="descCafeteria" value="150" class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500">Otros (Parqueo/Comida)</label>
-                        <input type="number" id="descOtros" placeholder="0.00" class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm">
+                        <label class="block text-xs font-semibold text-gray-600">3. Parqueo (Q)</label>
+                        <input type="number" id="descParqueo" value="150" class="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
             </div>
@@ -70,12 +70,12 @@
             </div>
 
             <button onclick="calcular()" class="w-full bg-blue-700 text-white font-bold py-3 px-4 rounded hover:bg-blue-800 transition duration-200 shadow-md">
-                CALCULAR LIQUIDACIÓN
+                CALCULAR TOTALES
             </button>
         </div>
 
         <div id="resultados" class="hidden bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-semibold mb-3 border-b border-gray-300 pb-1">1. Prestaciones (Liquidación)</h3>
+            <h3 class="text-lg font-semibold mb-3 border-b border-gray-300 pb-1">1. Liquidación (Prestaciones)</h3>
             
             <div class="space-y-2 text-sm mb-6">
                 <div class="flex justify-between border-b border-gray-200 pb-1 border-dotted">
@@ -113,12 +113,12 @@
                         <span id="resDescIGSS" class="font-mono">-Q0.00</span>
                     </div>
                     <div class="flex justify-between text-red-600 text-xs">
-                        <span>(-) ISR:</span>
-                        <span id="resDescISR" class="font-mono">-Q0.00</span>
+                        <span>(-) Cafetería:</span>
+                        <span id="resDescCafeteria" class="font-mono">-Q0.00</span>
                     </div>
                     <div class="flex justify-between text-red-600 text-xs">
-                        <span>(-) Otros (Comida/Parqueo):</span>
-                        <span id="resDescOtros" class="font-mono">-Q0.00</span>
+                        <span>(-) Parqueo:</span>
+                        <span id="resDescParqueo" class="font-mono">-Q0.00</span>
                     </div>
                 </div>
 
@@ -141,45 +141,31 @@
     </div>
 
     <script>
-        // Configuración inicial de fechas y valores
+        // Configuración inicial de fechas
         const today = new Date();
         const startOfYear = new Date(today.getFullYear()-1, 0, 1);
         
         document.getElementById('fechaInicio').valueAsDate = startOfYear; 
         document.getElementById('fechaFin').valueAsDate = today;
 
-        // Auto-calcular IGSS inicial
-        actualizarIGSS();
-
-        function actualizarIGSS() {
-            // Si el usuario no ha tocado manual, calculamos el 4.83%
-            const salario = parseFloat(document.getElementById('salario').value) || 0;
-            const igssEstimado = salario * 0.0483;
-            // Solo sugerimos valor si el campo está vacío o es el valor por defecto anterior
-            const inputIGSS = document.getElementById('descIGSS');
-            if (inputIGSS.value === "" || inputIGSS.dataset.auto === "true") {
-                inputIGSS.value = igssEstimado.toFixed(2);
-                inputIGSS.dataset.auto = "true"; // Marca para saber que fue auto-calculado
-            }
-        }
-        
-        // Si el usuario escribe manualmente en IGSS, quitamos la marca de "auto"
-        document.getElementById('descIGSS').addEventListener('input', function() {
-            this.dataset.auto = "false";
-        });
+        // Calculo automático inicial de IGSS (Estimado)
+        // Lo dejamos opcional para que el usuario ponga su dato real "47 3" o "676"
+        const salarioInicial = 14000;
+        document.getElementById('descIGSS').value = (salarioInicial * 0.0483).toFixed(2); 
 
         function calcular() {
-            // Inputs
+            // Inputs Salariales
             const salario = parseFloat(document.getElementById('salario').value) || 0;
             const anticipo = parseFloat(document.getElementById('anticipo').value) || 0;
             const diasVacaciones = parseFloat(document.getElementById('diasVacaciones').value) || 0;
             const motivo = document.getElementById('motivo').value;
 
-            // Descuentos desglosados
+            // 3 DATOS DE DESCUENTO SOLICITADOS
             const valIGSS = parseFloat(document.getElementById('descIGSS').value) || 0;
-            const valISR = parseFloat(document.getElementById('descISR').value) || 0;
-            const valOtros = parseFloat(document.getElementById('descOtros').value) || 0;
-            const totalDescuentos = valIGSS + valISR + valOtros;
+            const valCafeteria = parseFloat(document.getElementById('descCafeteria').value) || 0;
+            const valParqueo = parseFloat(document.getElementById('descParqueo').value) || 0;
+            
+            const totalDescuentos = valIGSS + valCafeteria + valParqueo;
             
             // Fechas
             const fInicio = new Date(document.getElementById('fechaInicio').value);
@@ -223,7 +209,7 @@
             const restanteSueldo = sueldoLiquido - anticipo;
             const granTotal = totalPrestaciones + restanteSueldo;
 
-            // RENDERIZADO EN PANTALLA
+            // RENDERIZADO
             
             // Prestaciones
             document.getElementById('resIndemnizacion').innerText = formatearQ(indemnizacion);
@@ -239,8 +225,8 @@
             
             // Descuentos individuales
             document.getElementById('resDescIGSS').innerText = '-' + formatearQ(valIGSS);
-            document.getElementById('resDescISR').innerText = '-' + formatearQ(valISR);
-            document.getElementById('resDescOtros').innerText = '-' + formatearQ(valOtros);
+            document.getElementById('resDescCafeteria').innerText = '-' + formatearQ(valCafeteria);
+            document.getElementById('resDescParqueo').innerText = '-' + formatearQ(valParqueo);
             
             document.getElementById('resAnticipo').innerText = '-' + formatearQ(anticipo);
             document.getElementById('totalSueldo').innerText = formatearQ(restanteSueldo);
