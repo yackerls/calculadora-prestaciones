@@ -3,29 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Exacta por Días</title>
+    <title>Calculadora GT - Versión Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 p-4 md:p-8 font-sans">
 
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-2xl border border-slate-200">
-        <header class="mb-6 border-b pb-4">
-            <h1 class="text-3xl font-extrabold text-slate-800">Calculadora Laboral 🇬🇹</h1>
-            <p class="text-slate-500 text-sm mt-1">Versión Corregida: Calcula pago exacto por días trabajados.</p>
+        <header class="mb-6 border-b pb-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-800">Calculadora Laboral 🇬🇹</h1>
+                <p class="text-slate-500 text-sm mt-1">Cálculo exacto de prestaciones y salario prorrateado.</p>
+            </div>
+            <div class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                Versión Final
+            </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             
             <div class="space-y-4">
-                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 transition hover:shadow-md">
                     <label class="block text-sm font-bold text-blue-900 mb-1">Salario Mensual Nominal (Q)</label>
                     <input type="number" id="salario" value="14000" class="w-full border-gray-300 rounded-md p-2 shadow-sm focus:ring-2 focus:ring-blue-500 font-bold text-lg text-slate-700">
-                    <p class="text-xs text-blue-400 mt-1">Tu sueldo contrato completo.</p>
+                    <p class="text-[11px] text-blue-400 mt-1">Base para cálculo de Indemnización, Bono 14 y Aguinaldo.</p>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 uppercase">Motivo de Salida</label>
-                    <select id="motivo" class="w-full mt-1 border-gray-300 rounded-md p-2 bg-white">
+                    <select id="motivo" class="w-full mt-1 border-gray-300 rounded-md p-2 bg-white focus:ring-2 focus:ring-blue-500">
                         <option value="despido">Despido Injustificado (Pagan todo)</option>
                         <option value="renuncia">Renuncia (Pierdes Indemnización)</option>
                     </select>
@@ -34,76 +39,96 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs text-slate-500">Inicio Labores</label>
-                        <input type="date" id="fechaInicio" class="w-full mt-1 border-gray-300 rounded-md p-1 text-sm">
+                        <input type="date" id="fechaInicio" class="w-full mt-1 border-gray-300 rounded-md p-1 text-sm focus:ring-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-500">Fecha Salida (Último día)</label>
-                        <input type="date" id="fechaFin" class="w-full mt-1 border-gray-300 rounded-md p-1 text-sm">
+                        <input type="date" id="fechaFin" class="w-full mt-1 border-gray-300 rounded-md p-1 text-sm focus:ring-blue-500">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs text-slate-500">Vacaciones Pendientes (Días)</label>
-                    <input type="number" id="diasVacaciones" value="15" step="0.01" class="w-full mt-1 border-gray-300 rounded-md p-2">
+                    <input type="number" id="diasVacaciones" value="15" step="0.01" class="w-full mt-1 border-gray-300 rounded-md p-2 focus:ring-blue-500">
                 </div>
             </div>
 
-            <div class="bg-red-50 p-4 rounded-lg border border-red-100 space-y-3">
-                <h3 class="text-sm font-bold text-red-900 border-b border-red-200 pb-2 mb-2">Descuentos del Mes</h3>
+            <div class="bg-red-50 p-4 rounded-lg border border-red-100 space-y-3 transition hover:shadow-md">
+                <h3 class="text-sm font-bold text-red-900 border-b border-red-200 pb-2 mb-2 flex justify-between">
+                    Descuentos del Mes
+                    <span class="text-[10px] bg-red-200 text-red-800 px-2 py-0.5 rounded-full">Proyectados</span>
+                </h3>
                 
                 <div class="flex items-center justify-between">
                     <label class="text-sm text-slate-700 w-1/3">IGSS (4.83%)</label>
                     <input type="number" id="descIGSS" class="w-2/3 border-gray-300 bg-gray-100 rounded-md p-1 text-right font-mono text-sm text-gray-500" readonly placeholder="Auto">
                 </div>
-                <p class="text-[10px] text-red-400 text-right">*Se calcula sobre lo que ganaste en los días trabajados.</p>
-
+                
                 <div class="flex items-center justify-between">
                     <label class="text-sm text-slate-700 w-1/3">ISR (Fijo)</label>
-                    <input type="number" id="descISR" value="415" class="w-2/3 border-gray-300 rounded-md p-1 text-right font-mono text-sm">
+                    <input type="number" id="descISR" value="415" class="w-2/3 border-gray-300 rounded-md p-1 text-right font-mono text-sm focus:ring-red-500">
                 </div>
 
                 <div class="flex items-center justify-between">
                     <label class="text-sm text-slate-700 w-1/3">Cafetería</label>
-                    <input type="number" id="descCafeteria" value="150" class="w-2/3 border-gray-300 rounded-md p-1 text-right font-mono text-sm">
+                    <input type="number" id="descCafeteria" value="150" class="w-2/3 border-gray-300 rounded-md p-1 text-right font-mono text-sm focus:ring-red-500">
                 </div>
 
                 <div class="flex items-center justify-between">
                     <label class="text-sm text-slate-700 w-1/3">Parqueo</label>
-                    <input type="number" id="descParqueo" value="150" class="w-2/3 border-gray-300 rounded-md p-1 text-right font-mono text-sm">
+                    <input type="number" id="descParqueo" value="150" class="w-2/3 border-gray-300 rounded-md p-1 text-right font-mono text-sm focus:ring-red-500">
                 </div>
 
                 <div class="pt-4 border-t border-red-200">
                     <label class="block text-xs font-bold text-red-800 mb-1">Anticipo Quincena (Ya recibido)</label>
-                    <input type="number" id="anticipo" value="4200" class="w-full border-red-200 bg-white rounded-md p-2 text-right font-bold text-red-700">
+                    <input type="number" id="anticipo" value="4200" class="w-full border-red-200 bg-white rounded-md p-2 text-right font-bold text-red-700 focus:ring-red-500">
                 </div>
             </div>
         </div>
 
-        <button onclick="calcularTodo()" class="w-full bg-slate-800 text-white font-bold py-4 rounded-lg hover:bg-slate-900 transition transform active:scale-95 shadow-lg text-lg">
+        <button onclick="calcularTodo()" class="w-full bg-slate-800 text-white font-bold py-4 rounded-lg hover:bg-slate-900 transition transform active:scale-[0.98] shadow-lg text-lg flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
             CALCULAR LIQUIDACIÓN FINAL
         </button>
 
         <div id="resultados" class="hidden mt-8 border-t-2 border-dashed border-slate-300 pt-6">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-4 rounded shadow-sm border border-slate-100">
-                    <h4 class="font-bold text-slate-700 mb-3 text-lg">💰 Prestaciones Acumuladas</h4>
-                    <ul class="space-y-2 text-sm text-slate-600">
-                        <li class="flex justify-between"><span>Indemnización:</span> <span id="resIndem" class="font-mono font-bold text-slate-800">Q0.00</span></li>
-                        <li class="flex justify-between"><span>Bono 14 (Prop.):</span> <span id="resBono14" class="font-mono">Q0.00</span></li>
-                        <li class="flex justify-between"><span>Aguinaldo (Prop.):</span> <span id="resAguinaldo" class="font-mono">Q0.00</span></li>
-                        <li class="flex justify-between"><span>Vacaciones:</span> <span id="resVacas" class="font-mono">Q0.00</span></li>
-                        <li class="flex justify-between pt-2 border-t font-bold text-blue-600 text-base"><span>Subtotal Prestaciones:</span> <span id="subPrestaciones">Q0.00</span></li>
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-700 mb-4 text-lg border-b pb-2">💰 Prestaciones Acumuladas</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="flex justify-between items-center">
+                            <span>Indemnización: <span id="txtDiasIndem" class="text-xs text-slate-400 font-normal ml-1"></span></span> 
+                            <span id="resIndem" class="font-mono font-bold text-slate-800 text-base">Q0.00</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span>Bono 14: <span id="txtDiasBono" class="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded ml-1 border border-slate-200">0 días</span></span> 
+                            <span id="resBono14" class="font-mono text-slate-700">Q0.00</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span>Aguinaldo: <span id="txtDiasAgui" class="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded ml-1 border border-slate-200">0 días</span></span> 
+                            <span id="resAguinaldo" class="font-mono text-slate-700">Q0.00</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span>Vacaciones:</span> 
+                            <span id="resVacas" class="font-mono text-slate-700">Q0.00</span>
+                        </li>
+                        <li class="flex justify-between pt-3 border-t font-bold text-blue-600 text-lg">
+                            <span>Subtotal Prestaciones:</span> <span id="subPrestaciones">Q0.00</span>
+                        </li>
                     </ul>
                 </div>
 
-                <div class="bg-white p-4 rounded shadow-sm border border-slate-100 relative overflow-hidden border-l-4 border-l-yellow-400">
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-yellow-100 text-yellow-800 text-[10px] px-2 py-1 rounded-bl font-bold uppercase tracking-wider">Pago Proporcional</div>
                     
-                    <h4 class="font-bold text-slate-700 mb-3 text-lg">📉 Sueldo del Mes Final</h4>
+                    <h4 class="font-bold text-slate-700 mb-4 text-lg border-b pb-2">📉 Sueldo Mes Final</h4>
                     
                     <ul class="space-y-2 text-sm text-slate-600">
-                        <li class="flex justify-between font-bold text-slate-800 bg-yellow-50 p-2 rounded">
-                            <span>Sueldo (<span id="txtDiasTrabajados">0</span> días trab.):</span> 
+                        <li class="flex justify-between font-bold text-slate-800 bg-yellow-50 p-2 rounded border border-yellow-100 mb-2">
+                            <span>Sueldo (<span id="txtDiasTrabajados">0</span> días):</span> 
                             <span id="resBruto" class="font-mono">Q0.00</span>
                         </li>
                         
@@ -112,7 +137,7 @@
                             <li class="flex justify-between"><span>(-) Otros Desc.:</span> <span id="outOtrosDesc">-Q0.00</span></li>
                         </div>
 
-                        <li class="flex justify-between text-red-600 font-medium border-t border-slate-100 pt-1">
+                        <li class="flex justify-between text-red-600 font-medium border-t border-slate-100 pt-2">
                             <span>(-) Total Descuentos:</span> 
                             <span id="resTotalDesc">-Q0.00</span>
                         </li>
@@ -120,7 +145,7 @@
                             <span>(-) Anticipo ya dado:</span> 
                             <span id="resAnticipo">-Q0.00</span>
                         </li>
-                        <li class="flex justify-between pt-2 border-t font-bold text-green-600 text-xl bg-green-50 p-2 rounded mt-2">
+                        <li class="flex justify-between pt-3 border-t font-bold text-green-600 text-lg bg-green-50 p-2 rounded mt-2 border border-green-100">
                             <span>Restante Sueldo:</span> 
                             <span id="subSueldo">Q0.00</span>
                         </li>
@@ -128,10 +153,10 @@
                 </div>
             </div>
 
-            <div class="mt-6 bg-slate-800 rounded-xl p-6 text-center text-white shadow-lg">
-                <span class="text-sm font-semibold uppercase tracking-widest opacity-80">Total Líquido a Recibir</span>
-                <div id="granTotal" class="text-5xl font-extrabold my-2 text-green-400">Q0.00</div>
-                <p class="text-xs opacity-70">Suma de tus prestaciones + el sueldo restante de los días trabajados.</p>
+            <div class="mt-8 bg-slate-800 rounded-xl p-8 text-center text-white shadow-xl transform transition hover:scale-[1.01]">
+                <span class="text-sm font-semibold uppercase tracking-widest opacity-80 mb-2 block">Total Líquido a Recibir</span>
+                <div id="granTotal" class="text-5xl md:text-6xl font-extrabold my-3 text-green-400 tracking-tight">Q0.00</div>
+                <p class="text-xs opacity-60 max-w-md mx-auto">Suma total de todas las prestaciones acumuladas más el saldo pendiente de tu último sueldo.</p>
             </div>
 
         </div>
@@ -159,48 +184,43 @@
             // Fechas
             const fIni = new Date(document.getElementById('fechaInicio').value);
             const fFin = new Date(document.getElementById('fechaFin').value);
-            // Ajuste horario para evitar errores de día
-            fIni.setHours(12,0,0,0); 
-            fFin.setHours(12,0,0,0);
+            fIni.setHours(12,0,0,0); fFin.setHours(12,0,0,0);
 
-            // 2. CÁLCULO DE DÍAS TRABAJADOS EN EL MES DE SALIDA
-            // Obtenemos el día del mes de la fecha de salida (Ej: 18)
+            // 2. CÁLCULO DE DÍAS TRABAJADOS MES FINAL (Prorrateo)
             let diasTrabajadosMes = fFin.getDate();
-            // Ajuste comercial: Si es 31, cuenta como 30.
-            if (diasTrabajadosMes === 31) diasTrabajadosMes = 30;
+            if (diasTrabajadosMes === 31) diasTrabajadosMes = 30; // Ajuste comercial
 
-            // 3. CÁLCULO DEL SUELDO PROPORCIONAL (CORRECCIÓN CLAVE)
-            // Ya no usamos el salario completo, sino solo por los días trabajados
+            // 3. SUELDO PROPORCIONAL
             const sueldoDevengado = (salarioNominal / 30) * diasTrabajadosMes;
 
-            // 4. CÁLCULO AUTOMÁTICO DE IGSS
-            // El IGSS se paga sobre lo devengado, no sobre el nominal
+            // 4. IGSS AUTO
             const igssReal = sueldoDevengado * 0.0483;
             document.getElementById('descIGSS').value = igssReal.toFixed(2);
 
-            // Total Descuentos
+            // Descuentos Totales
             const totalDescuentos = igssReal + vISR + vCafe + vParqueo;
             const otrosDescuentos = vISR + vCafe + vParqueo;
 
-            // 5. CÁLCULO DE PRESTACIONES (Estas sí usan el salario nominal promedio)
+            // 5. PRESTACIONES
             const unDia = 86400000; 
             const antiguedadDias = Math.floor((fFin - fIni) / unDia) + 1;
             const aniosAntiguedad = antiguedadDias / 365;
 
+            // Indemnización
             let indem = 0;
             if (motivo === 'despido') {
                 indem = ((salarioNominal * 14) / 12) * aniosAntiguedad;
             }
 
             // Bono 14
-            let iniBono = new Date(fFin.getFullYear(), 6, 1);
+            let iniBono = new Date(fFin.getFullYear(), 6, 1); // 1 Julio
             if (fFin < iniBono) iniBono = new Date(fFin.getFullYear()-1, 6, 1);
             let fechaBaseBono = (fIni > iniBono) ? fIni : iniBono;
             let diasBono = Math.max(0, Math.floor((fFin - fechaBaseBono)/unDia) + 1);
             let bono14 = (salarioNominal / 365) * diasBono;
 
             // Aguinaldo
-            let iniAgui = new Date(fFin.getFullYear(), 11, 1);
+            let iniAgui = new Date(fFin.getFullYear(), 11, 1); // 1 Dic
             if (fFin < iniAgui) iniAgui = new Date(fFin.getFullYear()-1, 11, 1);
             let fechaBaseAgui = (fIni > iniAgui) ? fIni : iniAgui;
             let diasAgui = Math.max(0, Math.floor((fFin - fechaBaseAgui)/unDia) + 1);
@@ -211,36 +231,46 @@
 
             const subPrest = indem + bono14 + aguinaldo + vacas;
 
-            // 6. CÁLCULO FINAL DE SUELDO LÍQUIDO
+            // 6. LIQUIDO FINAL
             const sueldoLiquido = sueldoDevengado - totalDescuentos - anticipo;
 
-            // 7. MOSTRAR RESULTADOS
+            // 7. RENDERIZADO
             const fmt = (n) => 'Q' + n.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 
-            // Prestaciones
+            // Prestaciones con detalle de días
             document.getElementById('resIndem').innerText = fmt(indem);
+            // Mostrar años si es indemnización
+            if(motivo === 'despido') {
+                document.getElementById('txtDiasIndem').innerText = `(${aniosAntiguedad.toFixed(2)} años)`;
+            } else {
+                document.getElementById('txtDiasIndem').innerText = '(0 años)';
+            }
+            
             document.getElementById('resBono14').innerText = fmt(bono14);
+            document.getElementById('txtDiasBono').innerText = `${diasBono} días`;
+
             document.getElementById('resAguinaldo').innerText = fmt(aguinaldo);
+            document.getElementById('txtDiasAgui').innerText = `${diasAgui} días`;
+
             document.getElementById('resVacas').innerText = fmt(vacas);
             document.getElementById('subPrestaciones').innerText = fmt(subPrest);
 
-            // Sueldo (Sección Corregida)
+            // Sueldo
             document.getElementById('txtDiasTrabajados').innerText = diasTrabajadosMes;
-            document.getElementById('resBruto').innerText = fmt(sueldoDevengado); // AHORA MOSTRARÁ Q8,400 SI ES DÍA 18
+            document.getElementById('resBruto').innerText = fmt(sueldoDevengado);
             
             document.getElementById('outIGSS').innerText = '-' + fmt(igssReal);
             document.getElementById('outOtrosDesc').innerText = '-' + fmt(otrosDescuentos);
-            
             document.getElementById('resTotalDesc').innerText = '-' + fmt(totalDescuentos);
             document.getElementById('resAnticipo').innerText = '-' + fmt(anticipo);
-            
             document.getElementById('subSueldo').innerText = fmt(sueldoLiquido);
 
             // Gran Total
             document.getElementById('granTotal').innerText = fmt(subPrest + sueldoLiquido);
             
-            document.getElementById('resultados').classList.remove('hidden');
-            document.getElementById('resultados').scrollIntoView({behavior: 'smooth'});
+            const resultDiv = document.getElementById('resultados');
+            resultDiv.classList.remove('hidden');
+            resultDiv.scrollIntoView({behavior: 'smooth'});
         }
     </script>
 </body>
