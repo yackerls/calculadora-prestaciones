@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Liquidación GT</title>
+    <title>Calculadora de Liquidación GT - Exacta</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-8">
 
     <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Calculadora Laboral Guatemala</h1>
+        <h1 class="text-2xl font-bold text-gray-800 mb-2 border-b pb-2">Calculadora Laboral Exacta 🇬🇹</h1>
+        <p class="text-sm text-gray-500 mb-6">Cálculo basado en días calendario exactos (Regla: Salario Diario × Días laborados en el período).</p>
 
         <div class="grid grid-cols-1 gap-4 mb-6">
             
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Salario Nominal (Q)</label>
-                    <input type="number" id="salario" value="14000" class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <input type="number" id="salario" value="14000" class="mt-1 block w-full border border-gray-300 rounded-md p-2 shadow-sm focus:border-blue-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Total Descuentos (IGSS/ISR/Otros)</label>
@@ -27,7 +28,6 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700">Anticipo Quincena ya recibido (Q)</label>
                 <input type="number" id="anticipo" value="4200" class="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-yellow-50">
-                <p class="text-xs text-gray-500 mt-1">Si ya pasó el día 15, ingresa lo que te depositaron.</p>
             </div>
 
             <div>
@@ -44,137 +44,159 @@
                     <input type="date" id="fechaInicio" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Fecha Finalización</label>
+                    <label class="block text-sm font-medium text-gray-700">Fecha Finalización (Último día)</label>
                     <input type="date" id="fechaFin" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                 </div>
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700">Días de vacaciones pendientes de pago</label>
-                <input type="number" id="diasVacaciones" value="15" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                <label class="block text-sm font-medium text-gray-700">Días de vacaciones pendientes</label>
+                <div class="flex gap-2">
+                    <input type="number" id="diasVacaciones" value="15" step="0.01" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                    <button onclick="calcularProporcionalVacaciones()" class="mt-1 bg-gray-200 text-xs px-2 rounded hover:bg-gray-300" title="Calcula propocional del año actual">+ Proporcional Año Actual</button>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Si ya cumpliste año y no has gozado, pon 15. Si quieres sumar el proporcional de enero, súmale aprox 1.25 días.</p>
             </div>
 
-            <button onclick="calcular()" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-200">
-                Calcular Liquidación
+            <button onclick="calcular()" class="w-full bg-blue-700 text-white font-bold py-3 px-4 rounded hover:bg-blue-800 transition duration-200 shadow-md">
+                CALCULAR EXACTO
             </button>
         </div>
 
         <div id="resultados" class="hidden bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-semibold mb-3">Detalle del Pago Final</h3>
+            <h3 class="text-lg font-semibold mb-3">Prestaciones Laborales</h3>
             
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between border-b pb-1">
-                    <span>Indemnización:</span>
+                    <span>Indemnización (Tiempo de Servicio):</span>
                     <span id="resIndemnizacion" class="font-mono font-bold">Q0.00</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
-                    <span>Bono 14 (Proporcional):</span>
+                    <span>Bono 14 (Proporcional): <span id="diasBono" class="text-xs text-gray-500"></span></span>
                     <span id="resBono14" class="font-mono">Q0.00</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
-                    <span>Aguinaldo (Proporcional):</span>
+                    <span>Aguinaldo (Proporcional): <span id="diasAguinaldo" class="text-xs text-gray-500"></span></span>
                     <span id="resAguinaldo" class="font-mono">Q0.00</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
-                    <span>Vacaciones Pendientes:</span>
+                    <span>Vacaciones:</span>
                     <span id="resVacaciones" class="font-mono">Q0.00</span>
                 </div>
-                <div class="flex justify-between pt-2 text-blue-800 font-bold">
-                    <span>SUBTOTAL PRESTACIONES:</span>
+                <div class="flex justify-between pt-2 text-blue-800 font-bold text-lg">
+                    <span>TOTAL LIQUIDACIÓN:</span>
                     <span id="totalPrestaciones">Q0.00</span>
                 </div>
             </div>
 
-            <h3 class="text-lg font-semibold mt-6 mb-3">Sueldo del Mes Actual (Neto)</h3>
+            <h3 class="text-lg font-semibold mt-6 mb-3">Sueldo Pendiente (Neto)</h3>
             <div class="space-y-2 text-sm">
                  <div class="flex justify-between">
                     <span>Sueldo Bruto Mes:</span>
                     <span id="resSueldoBruto" class="font-mono">Q0.00</span>
                 </div>
                 <div class="flex justify-between text-red-600">
-                    <span>(-) Descuentos (IGSS/ISR/Otros):</span>
+                    <span>(-) Descuentos:</span>
                     <span id="resDescuentos" class="font-mono">-Q0.00</span>
                 </div>
                  <div class="flex justify-between text-red-600 border-b pb-1">
-                    <span>(-) Anticipo Quincena:</span>
+                    <span>(-) Anticipo:</span>
                     <span id="resAnticipo" class="font-mono">-Q0.00</span>
                 </div>
                  <div class="flex justify-between pt-2 text-green-700 font-bold">
-                    <span>RESTANTE A PAGAR DE SUELDO:</span>
+                    <span>A RECIBIR DE SUELDO:</span>
                     <span id="totalSueldo">Q0.00</span>
                 </div>
             </div>
 
-            <div class="mt-6 p-4 bg-green-100 rounded text-center border border-green-300">
-                <span class="block text-gray-600 text-sm">Total a recibir en Cheque/Transferencia</span>
-                <span id="granTotal" class="text-3xl font-bold text-green-800">Q0.00</span>
+            <div class="mt-6 p-4 bg-green-100 rounded text-center border border-green-300 shadow-inner">
+                <span class="block text-gray-600 text-sm font-semibold">TOTAL FINAL A RECIBIR</span>
+                <span id="granTotal" class="text-4xl font-bold text-green-800">Q0.00</span>
             </div>
         </div>
     </div>
 
     <script>
-        // Configurar fechas por defecto
-        document.getElementById('fechaInicio').value = '2025-01-01'; // Ejemplo: Entraste hace 1 año
-        document.getElementById('fechaFin').value = '2026-01-31';    // Ejemplo: Sales a fin de mes
+        // Set defaults
+        const today = new Date();
+        const startOfYear = new Date(today.getFullYear()-1, 0, 1);
+        // Formato YYYY-MM-DD para inputs date
+        document.getElementById('fechaInicio').valueAsDate = startOfYear; 
+        document.getElementById('fechaFin').valueAsDate = today;
 
         function calcular() {
-            // Obtener valores
             const salario = parseFloat(document.getElementById('salario').value) || 0;
             const descuentos = parseFloat(document.getElementById('descuentos').value) || 0;
             const anticipo = parseFloat(document.getElementById('anticipo').value) || 0;
             const diasVacaciones = parseFloat(document.getElementById('diasVacaciones').value) || 0;
             const motivo = document.getElementById('motivo').value;
             
-            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
-            const fechaFin = new Date(document.getElementById('fechaFin').value);
+            // Fechas en UTC para evitar problemas de zona horaria
+            const fInicio = new Date(document.getElementById('fechaInicio').value);
+            const fFin = new Date(document.getElementById('fechaFin').value);
+            
+            // Ajustar a medio día para evitar saltos de fecha por timezone
+            fInicio.setHours(12,0,0,0);
+            fFin.setHours(12,0,0,0);
 
-            // Cálculos de tiempo
-            const diferenciaTiempo = fechaFin - fechaInicio;
-            const diasLaborados = diferenciaTiempo / (1000 * 3600 * 24);
-            const aniosLaborados = diasLaborados / 365;
+            // Cálculos base
+            const unDia = 1000 * 60 * 60 * 24;
+            const antiguedadDias = Math.floor((fFin - fInicio) / unDia) + 1; // +1 inclusivo
+            const salarioDiario = salario / 30; // Base comercial mensual
+            const salarioDiarioAnual = salario / 365; // Base para prestaciones anuales exactas
 
-            // 1. Indemnización (Solo si es despido)
-            // Base: (Sueldo * 14) / 12 para incluir la parte proporcional de bonos en la base
+            // 1. INDEMNIZACION
+            // Base: (Salario + 1/6) según código de trabajo para incluir promedio aguinaldo/bono
+            // O la regla comercial: (Salario * 14) / 12
             let indemnizacion = 0;
             if (motivo === 'despido') {
-                const baseIndemnizacion = (salario * 14) / 12; 
-                indemnizacion = baseIndemnizacion * aniosLaborados;
+                const baseIndem = (salario * 14) / 12; // Base Promedio
+                const anios = antiguedadDias / 365; // Años exactos
+                indemnizacion = baseIndem * anios;
             }
 
-            // 2. Bono 14 (Del 1 de Julio a la fecha de fin)
-            // Lógica simplificada: calcular días desde el último 1 de julio
-            let fechaBono = new Date(fechaFin.getFullYear() - 1, 6, 1); // 1 Julio del año anterior
-            if (fechaFin.getMonth() >= 6) { 
-                fechaBono = new Date(fechaFin.getFullYear(), 6, 1); // Si estamos post-julio, es este año
+            // 2. BONO 14 (Periodo: 1 Julio - 30 Junio)
+            // Encontrar el 1 de julio anterior a la fecha de fin
+            let inicioBono = new Date(fFin.getFullYear(), 6, 1); // 1 Julio de este año
+            if (fFin < inicioBono) {
+                inicioBono = new Date(fFin.getFullYear() - 1, 6, 1); // 1 Julio del año pasado
             }
-            // Ajuste manual para el ejemplo (Julio 2025 a Ene 2026 son 7 meses aprox)
-            // En un sistema real se usa una librería como moment.js o day.js para exactitud de días
-            const mesesBono = 7; // Aproximado para Enero
-            const bono14 = (salario / 12) * mesesBono;
+            // Si la fecha de inicio laboral es posterior al inicio del periodo bono, usar fecha inicio
+            let fechaArrancaBono = (fInicio > inicioBono) ? fInicio : inicioBono;
+            
+            const diasBono = Math.max(0, Math.floor((fFin - fechaArrancaBono) / unDia) + 1);
+            // Fórmula exacta: (Salario / 365) * Días trabajados en el periodo
+            // Nota: Se suele usar Salario Promedio, aquí usaremos el nominal actual
+            const bono14 = (salario / 365) * diasBono; 
 
-            // 3. Aguinaldo (Del 1 de Diciembre a fecha fin)
-            // Ajuste para el ejemplo (Dic 2025 a Ene 2026 son 2 meses)
-            const mesesAguinaldo = 2; 
-            const aguinaldo = (salario / 12) * mesesAguinaldo;
+            // 3. AGUINALDO (Periodo: 1 Diciembre - 30 Noviembre)
+            let inicioAguinaldo = new Date(fFin.getFullYear(), 11, 1); // 1 Dic este año
+            if (fFin < inicioAguinaldo) {
+                inicioAguinaldo = new Date(fFin.getFullYear() - 1, 11, 1); // 1 Dic año pasado
+            }
+            let fechaArrancaAguinaldo = (fInicio > inicioAguinaldo) ? fInicio : inicioAguinaldo;
 
-            // 4. Vacaciones
-            // Fórmula: (Salario / 30 días) * Días pendientes
-            const pagoVacaciones = (salario / 30) * diasVacaciones;
+            const diasAguinaldo = Math.max(0, Math.floor((fFin - fechaArrancaAguinaldo) / unDia) + 1);
+            const aguinaldo = (salario / 365) * diasAguinaldo;
 
-            // SUBTOTAL PRESTACIONES
+            // 4. VACACIONES
+            const pagoVacaciones = salarioDiario * diasVacaciones;
+
+            // Totales
             const totalPrestaciones = indemnizacion + bono14 + aguinaldo + pagoVacaciones;
-
-            // 5. CÁLCULO DE SUELDO RESTANTE
             const sueldoLiquido = salario - descuentos;
             const restanteSueldo = sueldoLiquido - anticipo;
-
-            // GRAN TOTAL
             const granTotal = totalPrestaciones + restanteSueldo;
 
-            // Renderizar
+            // Render
             document.getElementById('resIndemnizacion').innerText = formatearQ(indemnizacion);
+            
             document.getElementById('resBono14').innerText = formatearQ(bono14);
+            document.getElementById('diasBono').innerText = `(${diasBono} días calc)`;
+            
             document.getElementById('resAguinaldo').innerText = formatearQ(aguinaldo);
+            document.getElementById('diasAguinaldo').innerText = `(${diasAguinaldo} días calc)`;
+            
             document.getElementById('resVacaciones').innerText = formatearQ(pagoVacaciones);
             document.getElementById('totalPrestaciones').innerText = formatearQ(totalPrestaciones);
 
@@ -182,10 +204,34 @@
             document.getElementById('resDescuentos').innerText = '-' + formatearQ(descuentos);
             document.getElementById('resAnticipo').innerText = '-' + formatearQ(anticipo);
             document.getElementById('totalSueldo').innerText = formatearQ(restanteSueldo);
-
             document.getElementById('granTotal').innerText = formatearQ(granTotal);
             
             document.getElementById('resultados').classList.remove('hidden');
+        }
+
+        function calcularProporcionalVacaciones() {
+            // Lógica simple: Sumar proporcional desde el último aniversario hasta Fecha Fin
+            const fInicio = new Date(document.getElementById('fechaInicio').value);
+            const fFin = new Date(document.getElementById('fechaFin').value);
+            
+            // Encontrar el último aniversario
+            let ultimoAniversario = new Date(fInicio);
+            ultimoAniversario.setFullYear(fFin.getFullYear());
+            if (ultimoAniversario > fFin) {
+                ultimoAniversario.setFullYear(fFin.getFullYear() - 1);
+            }
+
+            const unDia = 1000 * 60 * 60 * 24;
+            const diasDesdeAniversario = Math.floor((fFin - ultimoAniversario) / unDia);
+            
+            // 15 días por cada 365 días
+            const proporcional = (diasDesdeAniversario * 15) / 365;
+            
+            // Sumar al input actual
+            let actual = parseFloat(document.getElementById('diasVacaciones').value) || 0;
+            document.getElementById('diasVacaciones').value = (actual + proporcional).toFixed(2);
+            alert(`Se agregaron ${proporcional.toFixed(2)} días proporcionales.`);
+            calcular();
         }
 
         function formatearQ(monto) {
